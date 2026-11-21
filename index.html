@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Elsword Trainer</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+  :root { --bg:#060a11; --panel:#0c1320; --line:#1b3a57; --fg:#d6f4ff; --muted:#6c8aa6; --accent:#00b8d9; --hi:#22e6ff; --red:#ff5c6c; }
+  * { box-sizing: border-box; }
+  body { margin:0; min-height:100vh; display:grid; place-items:center; background:var(--bg); color:var(--fg);
+         font-family: Bahnschrift, "Segoe UI", system-ui, sans-serif; padding:16px; }
+  .card { width:100%; max-width:420px; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:28px; }
+  h1 { margin:0 0 4px; font-size:22px; color:var(--hi); letter-spacing:.04em; }
+  .rule { height:2px; background:linear-gradient(90deg,var(--hi),transparent); margin:10px 0 18px; }
+  p { margin:6px 0; color:var(--muted); font-size:14px; line-height:1.45; }
+  button { width:100%; margin-top:18px; padding:12px; border:0; border-radius:6px; background:var(--accent); color:#02121a;
+           font:inherit; font-weight:700; font-size:15px; cursor:pointer; }
+  button:hover { background:var(--hi); }
+  button:disabled { background:var(--line); color:var(--muted); cursor:default; }
+  .bar { height:6px; background:#111c2d; border-radius:3px; margin-top:14px; overflow:hidden; display:none; }
+  .bar > div { height:100%; width:0; background:var(--hi); transition:width .15s; }
+  #msg { min-height:20px; }
+  .err { color:var(--red); }
+</style>
+</head>
+<body>
+<main class="card">
+  <h1>ELSWORD // TRAINER</h1>
+  <div class="rule"></div>
+  <p id="ver">verificando versão...</p>
+  <p>Extraia a pasta do .zip e abra <b>ElswordTrainer.exe</b>. Precisa de uma conta. Depois disso ele se atualiza sozinho.</p>
+  <button id="go" disabled>Baixar</button>
+  <div class="bar" id="bar"><div></div></div>
+  <p id="msg"></p>
+</main>
+<script>
+  // Login server (fixed ngrok domain). The header skips ngrok's free-plan browser warning page.
+  const SERVER = "https://synthetic-sculpture-print.ngrok-free.dev";
+  const H = { "ngrok-skip-browser-warning": "1" };
+  const $ = (id) => document.getElementById(id);
+  let info = null;
+
+  fetch(SERVER + "/versao", { headers: H })
+    .then((r) => r.json())
+    .then((d) => {
+      info = d;
+      if (!d.version) { $("ver").textContent = "Nenhuma versão publicada ainda."; return; }
+      $("ver").textContent = `Versão ${d.version} · ${(d.size / 1048576).toFixed(1)} MB`;
+      $("go").disabled = false;
+    })
+    .catch(() => { $("ver").innerHTML = '<span class="err">Servidor offline. Tente mais tarde.</span>'; });
+
+  $("go").onclick = async () => {
+    $("go").disabled = true;
+    $("bar").style.display = "block";
+    $("msg").className = ""; $("msg").textContent = "baixando...";
+    try {
+      const r = await fetch(SERVER + "/baixar", { headers: H });
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      const total = Number(r.headers.get("Content-Length")) || info.size || 0;
+      const reader = r.body.getReader();
+      const parts = []; let got = 0;
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        parts.push(value); got += value.length;
+        if (total) $("bar").firstElementChild.style.width = (100 * got / total).toFixed(1) + "%";
+      }
+      if (total && got !== total) throw new Error("download incompleto");
+      const ver = r.headers.get("X-Trainer-Version") || info.version;
+      const url = URL.createObjectURL(new Blob(parts, { type: "application/zip" }));
+      const a = Object.assign(document.createElement("a"), { href: url, download: `ElswordTrainer-${ver}.zip` });
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
+      $("msg").textContent = "pronto! confira a pasta Downloads.";
+    } catch (e) {
+      $("msg").className = "err"; $("msg").textContent = "falhou: " + e.message + " (servidor offline?)";
+    }
+    $("go").disabled = false;
+  };
+</script>
+</body>
+</html>
