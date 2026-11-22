@@ -6,19 +6,19 @@
 <title>Elsword Trainer</title>
 <meta name="robots" content="noindex, nofollow">
 <style>
-  :root { --bg:#060a11; --panel:#0c1320; --line:#1b3a57; --fg:#d6f4ff; --muted:#6c8aa6; --accent:#00b8d9; --hi:#22e6ff; --red:#ff5c6c; }
+  :root { --bg:#111318; --panel:#181B21; --line:#2A2F37; --fg:#E6E8EB; --muted:#8A919C; --accent:#4C8DFF; --hi:#7AABFF; --red:#E5484D; }
   * { box-sizing: border-box; }
   body { margin:0; min-height:100vh; display:grid; place-items:center; background:var(--bg); color:var(--fg);
-         font-family: Bahnschrift, "Segoe UI", system-ui, sans-serif; padding:16px; }
+         font-family: "Segoe UI", system-ui, sans-serif; padding:16px; }
   .card { width:100%; max-width:420px; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:28px; }
-  h1 { margin:0 0 4px; font-size:22px; color:var(--hi); letter-spacing:.04em; }
-  .rule { height:2px; background:linear-gradient(90deg,var(--hi),transparent); margin:10px 0 18px; }
+  h1 { margin:0 0 4px; font-size:22px; font-weight:600; color:var(--fg); }
+  .rule { height:1px; background:var(--line); margin:12px 0 18px; }
   p { margin:6px 0; color:var(--muted); font-size:14px; line-height:1.45; }
-  button { width:100%; margin-top:18px; padding:12px; border:0; border-radius:6px; background:var(--accent); color:#02121a;
+  button { width:100%; margin-top:18px; padding:12px; border:0; border-radius:6px; background:var(--accent); color:#0B1A33;
            font:inherit; font-weight:700; font-size:15px; cursor:pointer; }
   button:hover { background:var(--hi); }
   button:disabled { background:var(--line); color:var(--muted); cursor:default; }
-  .bar { height:6px; background:#111c2d; border-radius:3px; margin-top:14px; overflow:hidden; display:none; }
+  .bar { height:6px; background:#1F232A; border-radius:3px; margin-top:14px; overflow:hidden; display:none; }
   .bar > div { height:100%; width:0; background:var(--hi); transition:width .15s; }
   #msg { min-height:20px; }
   .err { color:var(--red); }
@@ -26,7 +26,7 @@
 </head>
 <body>
 <main class="card">
-  <h1>ELSWORD // TRAINER</h1>
+  <h1>Elsword Trainer</h1>
   <div class="rule"></div>
   <p id="ver">verificando versão...</p>
   <p>Extraia a pasta do .zip e abra <b>ElswordTrainer.exe</b>. Precisa de uma conta. Depois disso ele se atualiza sozinho.</p>
