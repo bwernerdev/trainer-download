@@ -35,9 +35,9 @@
   <p id="msg"></p>
 </main>
 <script>
-  // Login server (fixed ngrok domain). The header skips ngrok's free-plan browser warning page.
-  const SERVER = "https://synthetic-sculpture-print.ngrok-free.dev";
-  const H = { "ngrok-skip-browser-warning": "1" };
+  // Login server = Supabase Edge Function; /baixar redirects to the zip in the public Storage bucket.
+  const SERVER = "https://tcouqlxwszlcxsesnttk.supabase.co/functions/v1/trainer";
+  const H = {};
   const $ = (id) => document.getElementById(id);
   let info = null;
 
